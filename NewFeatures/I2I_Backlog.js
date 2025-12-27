@@ -1,9 +1,13 @@
 // ===================================================================
 //
 //   Script: I2I Backlog (Iris to Id Backlog)
-//   This script uses pure HTML/CSS and styled to match VNM's native UI.
-//   Author: Archeia
 //   Version: 1.4.0
+//   Author: Iris to Id (https://iristoid.itch.io/)
+//
+// DESCRIPTION:
+//   A customizable backlog display for Visual Novel Maker.
+//   The default one currently has an issue where it doesn't wordwrap
+//   properly due to static sizing. Built with pure HTML/CSS.
 //
 // ===================================================================
 
