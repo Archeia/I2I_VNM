@@ -3,6 +3,8 @@
 //   Script: I2I Backlog (Iris to Id Backlog)
 //   Version: 1.4.0
 //   Author: Iris to Id (https://iristoid.itch.io/)
+//   
+// ===================================================================
 //
 // DESCRIPTION:
 //   A customizable backlog display for Visual Novel Maker.

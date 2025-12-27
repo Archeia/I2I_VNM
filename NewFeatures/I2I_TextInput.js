@@ -1,7 +1,9 @@
 // ===================================================================
-// Text Input Plugin for Visual Novel Maker
-// Version: 5.0.0
-// Author: Iris to Id (https://iristoid.itch.io/)
+//
+//   Script: Text Input Plugin for Visual Novel Maker
+//   Version: 5.0.0
+//   Author: Iris to Id (https://iristoid.itch.io/)
+//   
 // ===================================================================
 //
 // DESCRIPTION:
