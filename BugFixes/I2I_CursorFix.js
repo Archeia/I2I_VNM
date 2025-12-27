@@ -9,7 +9,6 @@
 //   Depending on the project, sometimes your custom cursor will not
 //   display when loading a save file. This plugin fixes that.
 //
-//
 // ===================================================================
 
 (function() {

@@ -8,8 +8,6 @@
 //   Fixes an issue where the ratio/stretch feature doesn't work
 //   properly after maximizing and then unmaximizing a windowed game.
 //
-//   Supports NW.js, Electron, and browser environments.
-//
 // ===================================================================
 
 var WindowResizeFix;
