@@ -1,7 +1,7 @@
 // ===================================================================
 //   LetterSounds.js
 //   Author: Archeia
-//   Version: 1.0.0
+//   Version: 1.0.1
 // -------------------------------------------------------------------
 //
 // This plugin enables your messages to play sound effects per letter 
@@ -28,6 +28,19 @@
 //   window.LetterSound.blacklist       = " \n\t"  (chars that don't count)
 //   window.LetterSound.muteOnSkip      = true     (silent during skip)
 //   window.LetterSound.muteOnInstant   = true     (silent on instant display)
+//   window.LetterSound.volumeFloor     = 1        (min vol after variance)
+//
+// ── Character Profiles ──────────────────────────────────────────────────
+//   Define named presets and swap with a single call:
+//
+//   window.LetterSound.profiles = {
+//       narrator: { sounds: ["SFX_Typewriter1"], pitch: 90, volume: 15 },
+//       hero:     { sounds: ["SFX_Penv6","SFX_Penv7"], pitch: 100 },
+//       villain:  { sounds: ["SFX_Dark1"], pitch: 70, volume: 20 }
+//   };
+//
+//   window.LetterSound.setProfile("hero");    // switch voice
+//   window.LetterSound.setProfile(null);      // restore defaults
 //
 // ── In-Game Scene Usage ─────────────────────────────────────────────────
 //
@@ -40,9 +53,11 @@
 //     window.LetterSound.sounds = ["bleep001"];
 //     window.LetterSound.pitch  = 80;
 //
+//   Switch voice profile:
+//     window.LetterSound.setProfile("villain");
+//
 //   Restore defaults:
-//     window.LetterSound.sounds = ["SFX_Penv6", "SFX_Penv7", "SFX_Penv8"];
-//     window.LetterSound.pitch  = 100;
+//     window.LetterSound.setProfile(null);
 //
 // ===================================================================
 
@@ -66,8 +81,44 @@
     if (config.blacklist       == null) config.blacklist       = " \n\t";
     if (config.muteOnSkip      == null) config.muteOnSkip      = true;
     if (config.muteOnInstant   == null) config.muteOnInstant   = true;
+    if (config.volumeFloor     == null) config.volumeFloor     = 1;
+    if (config.profiles        == null) config.profiles        = {};
 
     window.LetterSound = config;
+
+    // ── Defaults Snapshot ──────────────────────────────
+    var PROFILE_KEYS = [
+        "sounds", "soundFolder", "volume", "pitch",
+        "pitchVariance", "volumeVariance", "interval",
+        "blacklist", "volumeFloor"
+    ];
+
+    var _defaults = {};
+    for (var d = 0; d < PROFILE_KEYS.length; d++) {
+        var dk = PROFILE_KEYS[d];
+        _defaults[dk] = Array.isArray(config[dk]) ? config[dk].slice() : config[dk];
+    }
+
+    // ── Profiles ───────────────────────────────────────
+    config.setProfile = function (name) {
+        var j, key, profile;
+
+        // Reset to defaults first, then layer the profile on top.
+        for (j = 0; j < PROFILE_KEYS.length; j++) {
+            key = PROFILE_KEYS[j];
+            config[key] = Array.isArray(_defaults[key]) ? _defaults[key].slice() : _defaults[key];
+        }
+
+        if (name != null && config.profiles[name]) {
+            profile = config.profiles[name];
+            for (j = 0; j < PROFILE_KEYS.length; j++) {
+                key = PROFILE_KEYS[j];
+                if (profile[key] != null) {
+                    config[key] = Array.isArray(profile[key]) ? profile[key].slice() : profile[key];
+                }
+            }
+        }
+    };
 
     // ────────────────────────────────────────────────────
     var counter   = 0;
@@ -119,7 +170,7 @@
         var vol  = config.volume + (Math.random() * 2 - 1) * config.volumeVariance;
         var rate = config.pitch  + (Math.random() * 2 - 1) * config.pitchVariance;
 
-        vol  = clamp(Math.round(vol),  0, 100);
+        vol  = clamp(Math.round(vol),  config.volumeFloor, 100);
         rate = clamp(Math.round(rate), 50, 200);
 
         AudioManager.playSound(
