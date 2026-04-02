@@ -1,8 +1,11 @@
 // ===================================================================
 //   LetterSounds V2
 //   Author: Archeia
-//   Version: 2.0.0
+//   Version: 2.0.1
 // -------------------------------------------------------------------
+// Changelog:
+//   2.0.1 - Fix crash on save load (skip sounds when audio buffer isn't ready)
+//   2.0.0 - Initial release
 //
 // This plugin enables your messages to play sound effects per letter
 // (or at certain intervals of letters) whenever they appear in a message window.
@@ -270,15 +273,21 @@
         var soundName = pickSound(state, config.sounds);
         if (!soundName) return;
 
+        var buffer = root.ResourceManager.getAudioBuffer(config.soundFolder + "/" + soundName);
+        if (!buffer) return;
+        try { if (!buffer.loaded || !buffer.decoded) return; } catch(e) { return; }
+
         var vol  = clamp(Math.round(randomize(config.volume, config.volumeVariance)), config.volumeFloor, 100);
         var rate = clamp(Math.round(randomize(config.pitch,  config.pitchVariance)),  50, 200);
 
-        root.AudioManager.playSound({
-            name: soundName,
-            folderPath: config.soundFolder,
-            volume: vol,
-            playbackRate: rate
-        });
+        try {
+            root.AudioManager.playSound({
+                name: soundName,
+                folderPath: config.soundFolder,
+                volume: vol,
+                playbackRate: rate
+            });
+        } catch(e) {}
     }
 
     // ── Patches ────────────────────────────────────

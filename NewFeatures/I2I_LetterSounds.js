@@ -1,8 +1,11 @@
 // ===================================================================
 //   LetterSounds.js
 //   Author: Archeia
-//   Version: 1.0.0
+//   Version: 1.0.1
 // -------------------------------------------------------------------
+// Changelog:
+//   1.0.1 - Fix crash on save load (skip sounds when audio buffer isn't ready)
+//   1.0.0 - Initial release
 //
 // This plugin enables your messages to play sound effects per letter 
 // (or at certain intervals of letters) whenever they appear in a message window. 
@@ -116,17 +119,23 @@
         ensurePreloaded();
 
         var soundName = pickSound();
+        var buffer = ResourceManager.getAudioBuffer(config.soundFolder + "/" + soundName);
+        if (!buffer) return result;
+        try { if (!buffer.loaded || !buffer.decoded) return result; } catch(e) { return result; }
+
         var vol  = config.volume + (Math.random() * 2 - 1) * config.volumeVariance;
         var rate = config.pitch  + (Math.random() * 2 - 1) * config.pitchVariance;
 
         vol  = clamp(Math.round(vol),  0, 100);
         rate = clamp(Math.round(rate), 50, 200);
 
-        AudioManager.playSound(
-            { name: soundName, folderPath: config.soundFolder },
-            vol,
-            rate
-        );
+        try {
+            AudioManager.playSound(
+                { name: soundName, folderPath: config.soundFolder },
+                vol,
+                rate
+            );
+        } catch(e) {}
 
         return result;
     };
