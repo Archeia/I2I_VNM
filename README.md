@@ -8,6 +8,7 @@ A collection of bug fixes and new features for Visual Novel Maker. Free to use u
 - **Window Resize Fix** — Corrects ratio/stretch display feature breaking after window maximize/restore cycles.
 - **White Outline Fix** — Eliminates white outline artifacts on character sprites during zoom-out.
 - **Template_Backlog Fix** — Replaces the original backlog with word-wrapping and mouse control support.
+- **Create Message Area Visibility Fix** — Fixes the bug where spacebar isn't able to hide text using create message area command.
 
 ## New Features
 
